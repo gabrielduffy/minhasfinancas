@@ -5,7 +5,7 @@ import {
     ShieldCheck,
     TrendingUp,
     Search,
-    GanttChartSquare,
+    ClipboardList,
     Building2,
     FileSearch,
     Zap
@@ -87,7 +87,7 @@ export default function EuPage() {
             <Card className="bg-primary/5 border-primary/20">
                 <CardContent className="p-4 flex gap-4 items-center">
                     <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shrink-0">
-                        <GanttChartSquare className="w-6 h-6 text-black" />
+                        <ClipboardList className="w-6 h-6 text-black" />
                     </div>
                     <div>
                         <h4 className="text-xs font-bold text-white">Consolidar Perfil</h4>
