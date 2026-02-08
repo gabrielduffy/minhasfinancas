@@ -2,9 +2,6 @@
 
 @import "tailwindcss";
 
-@source "../app/**/*.{ts,tsx}";
-@source "../components/**/*.{ts,tsx}";
-
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
@@ -67,7 +64,8 @@
   }
 
   body {
-    @apply bg-black text-white;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
     font-family: var(--font-sans);
   }
 }
@@ -98,7 +96,6 @@
   }
 }
 
-/* 🚀 REMOVENDO OVERLAYS DE DEV */
 #next-dev-overlay,
 [data-nextjs-dialog-overlay],
 [data-nextjs-toast-wrapper],
