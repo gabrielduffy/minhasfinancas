@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap');
+
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: "Sora", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: oklch(0% 0 0);
+  --color-foreground: oklch(98% 0 0);
+
+  --color-card: oklch(12% 0 0);
+  --color-card-foreground: oklch(98% 0 0);
+
+  --color-popover: oklch(12% 0 0);
+  --color-popover-foreground: oklch(98% 0 0);
+
+  --color-primary: oklch(92.41% 0.2447 104.59);
+  --color-primary-foreground: oklch(0% 0 0);
+
+  --color-secondary: oklch(25% 0 0);
+  --color-secondary-foreground: oklch(98% 0 0);
+
+  --color-muted: oklch(20% 0 0);
+  --color-muted-foreground: oklch(80% 0 0);
+
+  --color-accent: oklch(92.41% 0.2447 104.59);
+  --color-accent-foreground: oklch(0% 0 0);
+
+  --color-destructive: oklch(62.8% 0.2577 29.23);
+  --color-destructive-foreground: oklch(98% 0 0);
+
+  --color-border: oklch(20% 0 0);
+  --color-input: oklch(20% 0 0);
+  --color-ring: oklch(92.41% 0.2447 104.59);
+
+  --radius-lg: 0.75rem;
+  --radius-md: calc(0.75rem - 2px);
+  --radius-sm: calc(0.75rem - 4px);
+
+  --animate-neon-pulse: neon-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes neon-pulse {
+
+    0%,
+    100% {
+      opacity: 1;
+      filter: drop-shadow(0 0 15px rgba(204, 255, 0, 0.5));
+    }
+
+    50% {
+      opacity: 0.8;
+      filter: drop-shadow(0 0 30px rgba(204, 255, 0, 0.8));
+    }
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+}
+
+@layer components {
+  .neon-glow {
+    filter: drop-shadow(0 0 10px rgba(204, 255, 0, 0.3));
+  }
+
+  .glass {
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .neon-border {
+    border: 1px solid color-mix(in srgb, var(--color-primary) 50%, transparent);
+    filter: drop-shadow(0 0 10px rgba(204, 255, 0, 0.4));
+  }
+
+  .hov-glow {
+    transition: all 0.3s ease;
+  }
+
+  .hov-glow:hover {
+    filter: drop-shadow(0 0 15px rgba(204, 255, 0, 0.5)) brightness(1.1);
+    transform: translateY(-2px);
+  }
+}
+
+/* 🚀 REMOVENDO OVERLAYS DE DEV (Logo 'N' / Feedback / Vercel) */
+#next-dev-overlay,
+[data-nextjs-dialog-overlay],
+[data-nextjs-toast-wrapper],
+[data-vercel-toolbar],
+#vercel-live-feedback {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
