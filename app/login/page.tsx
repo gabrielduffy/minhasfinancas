@@ -41,8 +41,6 @@ export default function LoginPage() {
                                     },
                                     radii: {
                                         borderRadiusButton: '12px',
-                                        buttonPadding: '12px',
-                                        inputPadding: '12px',
                                     }
                                 }
                             }
