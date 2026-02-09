@@ -1,6 +1,5 @@
 "use client";
 
-import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
 import { BottomNav } from "@/components/BottomNav";
@@ -9,11 +8,6 @@ import { supabase } from "@/lib/supabase";
 import { usePathname, useRouter } from "next/navigation";
 
 const sora = Sora({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-    title: "MinhasFinanças",
-    description: "Gerenciador financeiro pessoal focado em investimentos",
-};
 
 export default function RootLayout({
     children,
@@ -45,7 +39,13 @@ export default function RootLayout({
     }, [pathname, router]);
 
     if (loading && pathname !== '/login') {
-        return <body className="bg-black min-h-screen flex items-center justify-center text-primary">...</body>;
+        return (
+            <html lang="pt-BR" className="dark">
+                <body className="bg-black min-h-screen flex items-center justify-center text-primary">
+                    <div className="animate-pulse font-bold tracking-widest uppercase text-xs">Acessando Cofre...</div>
+                </body>
+            </html>
+        );
     }
 
     return (
