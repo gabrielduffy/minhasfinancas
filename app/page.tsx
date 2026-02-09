@@ -22,13 +22,7 @@ import {
     ResponsiveContainer,
     Tooltip,
 } from "recharts";
-
-const allocationData = [
-    { name: "Renda Fixa", value: 40, color: "#CCFF00" },
-    { name: "Variável", value: 30, color: "#888888" },
-    { name: "Bitcoin", value: 20, color: "#F7931A" },
-    { name: "Internacional", value: 10, color: "#0070f3" },
-];
+import { usePortfolio } from "@/hooks/usePortfolio";
 
 const insights = [
     {
@@ -46,6 +40,8 @@ const insights = [
 ];
 
 export default function DashboardPage() {
+    const { totalPatrimony, allocationData, loading, error } = usePortfolio();
+
     return (
         <div className="flex flex-col gap-6 p-4 pb-24 max-w-md mx-auto animate-in fade-in duration-700">
             {/* Header */}
@@ -66,7 +62,9 @@ export default function DashboardPage() {
                     </div>
                     <CardHeader className="pb-2">
                         <CardDescription className="text-primary/70 font-medium tracking-wider uppercase text-xs">Patrimônio Total</CardDescription>
-                        <CardTitle className="text-4xl font-extrabold text-white">R$ 145.230,00</CardTitle>
+                        <CardTitle className="text-4xl font-extrabold text-white">
+                            {loading ? "Carregando..." : `R$ ${totalPatrimony.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="flex items-center gap-2 text-primary font-semibold">
@@ -90,7 +88,7 @@ export default function DashboardPage() {
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie
-                                    data={allocationData}
+                                    data={allocationData.length > 0 ? allocationData : [{ name: 'Vazio', value: 100 }]}
                                     cx="50%"
                                     cy="50%"
                                     innerRadius={55}
@@ -98,9 +96,13 @@ export default function DashboardPage() {
                                     paddingAngle={5}
                                     dataKey="value"
                                 >
-                                    {allocationData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
-                                    ))}
+                                    {allocationData.length > 0 ? (
+                                        allocationData.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
+                                        ))
+                                    ) : (
+                                        <Cell fill="#333" stroke="none" />
+                                    )}
                                 </Pie>
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#000', border: '1px solid #333', borderRadius: '12px' }}
@@ -110,7 +112,7 @@ export default function DashboardPage() {
                         </ResponsiveContainer>
                     </div>
                     <div className="grid grid-cols-2 gap-3 mt-4">
-                        {allocationData.map((item) => (
+                        {(allocationData.length > 0 ? allocationData : [{ name: 'Nenhum Ativo', value: 100, color: '#333' }]).map((item) => (
                             <div key={item.name} className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: item.color }} />
                                 <span className="text-[10px] text-muted-foreground font-bold uppercase">{item.name}</span>
