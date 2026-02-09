@@ -75,7 +75,7 @@ export default function LoginPage() {
                                     loading_button_label: 'Criando...',
                                     link_text: 'Já tem uma conta? Entre',
                                 },
-                                forgot_password: {
+                                forgotten_password: {
                                     email_label: 'E-mail',
                                     password_label: 'Senha',
                                     email_input_placeholder: 'Seu endereço de e-mail',
