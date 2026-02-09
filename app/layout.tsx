@@ -1,3 +1,4 @@
+// MinhasFinanças - Versão Final de Integração 1.0.1
 "use client";
 
 import { Sora } from "next/font/google";
