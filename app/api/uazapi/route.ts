@@ -5,26 +5,26 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
 
-        // Formato comum de Webhook (pode variar conforme a instância UAZAPI)
-        // Normalmente: body.text ou body.message.text
+        // Formato Webhook UAZAPI
         const messageText = body.text || body.message?.text || body.content;
-        const sender = body.sender || body.from || "Usuário";
+        const remoteJid = body.remoteJid || body.from || body.chatId;
+        const senderName = body.pushName || body.sender?.name || "Usuário";
 
-        if (!messageText) {
-            return NextResponse.json({ error: "Nenhuma mensagem enviada" }, { status: 400 });
+        if (!messageText || !remoteJid) {
+            return NextResponse.json({ error: "Dados da mensagem incompletos" }, { status: 400 });
         }
 
-        // 1. Buscar contexto do portfólio para a IA
+        // 1. Buscar contexto do portfólio no Supabase
         const { data: investments } = await supabase
             .from('investments')
             .select('*');
 
         const portfolioSummary = investments?.map(inv =>
-            `- ${inv.name} (${inv.category}): R$ ${(inv.quantity * (inv.current_price || inv.average_price)).toLocaleString('pt-BR')}`
-        ).join('\n') || "Nenhum investimento cadastrado ainda.";
+            `- ${inv.name}: R$ ${(inv.quantity * (inv.current_price || inv.average_price)).toLocaleString('pt-BR')}`
+        ).join('\n') || "Sem investimentos cadastrados.";
 
-        // 2. Chamar Groq com contexto personalizado
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        // 2. Inteligência Groq
+        const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
@@ -35,35 +35,46 @@ export async function POST(req: Request) {
                 messages: [
                     {
                         role: 'system',
-                        content: `Você é o Agente MinhasFinanças, um especialista em investimentos de elite. 
-                        Você está conversando com ${sender} via WhatsApp.
-                        
-                        Aqui está o portfólio atual do usuário no banco de dados:
+                        content: `Você é o Agente MinhasFinanças. Responda ${senderName} via WhatsApp.
+                        Contexto da Carteira:
                         ${portfolioSummary}
                         
-                        Responda de forma extremamente concisa, direta e com um tom premium. 
-                        Use emojis financeiros com moderação. 
-                        Se o usuário perguntar sobre o patrimônio, use os dados acima.`
+                        Seja premium, curto e objetivo.`
                     },
                     { role: 'user', content: messageText }
                 ],
-                temperature: 0.6,
+                temperature: 0.5,
             })
         });
 
-        const data = await response.json();
-        const aiResponse = data.choices[0]?.message?.content || "Desculpe, tive um problema ao processar seu pedido.";
+        const groqData = await groqResponse.json();
+        const aiReply = groqData.choices[0]?.message?.content || "Agente Financeiro indisponível.";
 
-        // 3. Retornar no formato esperado pela UAZAPI ou apenas o texto
-        // Algumas instâncias esperam um JSON específico para responder o chat na hora
-        return NextResponse.json({
-            reply: aiResponse,
-            content: aiResponse,
-            status: "success"
-        });
+        // 3. Disparo de VOLTA para o WhatsApp (UAZAPI Sender)
+        // Usamos variáveis de ambiente que você pode configurar na Vercel
+        const UAZAPI_URL = process.env.UAZAPI_URL; // Ex: https://api.uazapi.com
+        const UAZAPI_TOKEN = process.env.UAZAPI_TOKEN;
+        const UAZAPI_INSTANCE = process.env.UAZAPI_INSTANCE;
+
+        if (UAZAPI_URL && UAZAPI_TOKEN && UAZAPI_INSTANCE) {
+            await fetch(`${UAZAPI_URL}/message/sendText`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${UAZAPI_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    instance: UAZAPI_INSTANCE,
+                    number: remoteJid,
+                    text: aiReply
+                })
+            });
+        }
+
+        return NextResponse.json({ status: "success", reply: aiReply });
 
     } catch (error) {
-        console.error("UAZAPI Logic Error:", error);
-        return NextResponse.json({ error: "Erro interno no Agente Groq" }, { status: 500 });
+        console.error("Critical UAZAPI Error:", error);
+        return NextResponse.json({ error: "Erro interno" }, { status: 500 });
     }
 }
