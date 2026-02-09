@@ -34,6 +34,7 @@ export default function LoginPage() {
                                     colors: {
                                         brand: '#CCFF00',
                                         brandAccent: '#AAEE00',
+                                        brandButtonText: 'black', // Corrigindo contraste do botão (Escrito em preto sobre verde)
                                         inputBackground: 'rgba(255,255,255,0.05)',
                                         inputText: 'white',
                                         inputBorder: 'rgba(255,255,255,0.1)',
@@ -41,6 +42,12 @@ export default function LoginPage() {
                                     },
                                     radii: {
                                         borderRadiusButton: '12px',
+                                    },
+                                    fonts: {
+                                        bodyFontFamily: `'Sora', sans-serif`,
+                                        buttonFontFamily: `'Sora', sans-serif`,
+                                        inputFontFamily: `'Sora', sans-serif`,
+                                        labelFontFamily: `'Sora', sans-serif`,
                                     }
                                 }
                             }
@@ -52,17 +59,28 @@ export default function LoginPage() {
                                 sign_in: {
                                     email_label: 'E-mail',
                                     password_label: 'Senha',
+                                    email_input_placeholder: 'Seu endereço de e-mail',
+                                    password_input_placeholder: 'Sua senha',
                                     button_label: 'Entrar agora',
                                     loading_button_label: 'Entrando...',
                                     social_provider_text: 'Entrar com {{provider}}',
-                                    link_text: 'Já tem uma conta? Entre',
+                                    link_text: 'Não tem uma conta? Cadastre-se',
                                 },
                                 sign_up: {
                                     email_label: 'E-mail',
                                     password_label: 'Crie uma senha',
+                                    email_input_placeholder: 'Seu endereço de e-mail',
+                                    password_input_placeholder: 'Sua senha',
                                     button_label: 'Criar conta',
                                     loading_button_label: 'Criando...',
-                                    link_text: 'Não tem conta? Cadastre-se',
+                                    link_text: 'Já tem uma conta? Entre',
+                                },
+                                forgot_password: {
+                                    email_label: 'E-mail',
+                                    password_label: 'Senha',
+                                    email_input_placeholder: 'Seu endereço de e-mail',
+                                    button_label: 'Recuperar senha',
+                                    link_text: 'Esqueceu sua senha?',
                                 }
                             }
                         }}
@@ -71,7 +89,7 @@ export default function LoginPage() {
                 </div>
 
                 <p className="text-center text-[10px] text-muted-foreground mt-8 uppercase tracking-tighter">
-                    Segurança Bancária & Criptografia Ponta-a-Ponta
+                    SEGURANÇA BANCÁRIA & CRIPTOGRAFIA PONTA-A-PONTA
                 </p>
             </motion.div>
         </div>
