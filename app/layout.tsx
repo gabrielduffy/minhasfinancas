@@ -33,6 +33,8 @@ export default function RootLayout({
             setSession(session);
             if (!session && pathname !== '/login') {
                 router.push('/login');
+            } else if (session && pathname === '/login') {
+                router.push('/');
             }
         });
 
